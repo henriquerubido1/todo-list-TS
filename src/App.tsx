@@ -1,34 +1,47 @@
 import React, { useState, ChangeEvent } from 'react';
+import Header from './components/Header';
 import './index.css';
 
-function App() {
+// FC stands for Function Component
+ 
+const App: React.FC = () => {
 	const [task, setTask] = useState<string>('');
-	const [list, setList] = useState<Array<string>>([]);
+	const [list, setList] = useState<string[]>([]);
 
-	function handleChange(e: ChangeEvent<HTMLInputElement>): void {
-		setTask(e.target.value);
+	function handleChange({ target }: ChangeEvent<HTMLInputElement>): void {
+		setTask(target.value);
 	}
 
-	function addTask() {
+	function addTask(): void {
 		setList([...list, task]);
+	}
+
+	function removeTask({ target }: Event & { target: HTMLButtonElement }) {
+		setList(list.filter(task => task !== target.parentElement?.firstChild?.textContent));
 	}
 
 	return (
 		<div>
-			<header>
-				<h1>Todo List in TypeScript</h1>
-			</header>
+			<Header />
 			<section>
 				<input
 					type='text'
 					placeholder='set task'
-					onChange={handleChange}
+					onChange={ handleChange }
 				/>
-				<button onClick={addTask} type='submit'>add task</button>
+				<button onClick={ addTask } type='submit'>add task</button>
 			</section>
-			{ list.length > 0 && list.map(item => <li>{ item }</li>)}
+			<div>
+				{list.map(item => (
+					// eslint-disable-next-line react/jsx-key
+					<div>
+						<li>{ item }</li>
+						<button onClick={ removeTask } type='submit'>X</button>
+					</div>)
+				)}
+			</div>
 		</div>
 	);
-}
+};
 
 export default App;
